@@ -1,1 +1,1 @@
- export const API_DOMAIN = ' http://localhost:4000/api';
+export const API_DOMAIN = ' https://shaglnibackend.onrender.com/api';
