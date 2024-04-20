@@ -1,0 +1,199 @@
+<section class="bg-light" *ngIf="company" [dir]="DirectSite">
+    <div class="container">
+        <div>
+            <span class="section-title text-primary mb-3 mb-sm-4">
+                <i class="fas fa-sign-out icon-rounded" (click)="LogOut()"></i></span>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 mb-4 mb-sm-5">
+                <div class="card card-style1 border-0">
+                    <div class="card-body p-1-9 p-sm-2-3 p-md-6 p-lg-7">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 mb-4 mb-lg-0">
+                                <span
+                                    [ngClass]="{'no-box-shadow':1,'edit-image':!isArabic,'edit-image-arabic no-box-shadow':isArabic,}"><i
+                                        (click)="UpdateBasic()" class="fas fa-pencil icon-rounded"
+                                        *ngIf="!companyGuest"></i></span>
+                                <img [src]="previousImageUrl()" height="300" width="300" alt="...">
+                            </div>
+                            <div class="col-lg-6 px-xl-10">
+                                <div class="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded">
+                                    <h3 class="h2 text-white mb-0">{{company.name}}</h3>
+                                    <span class="text-primary">{{getCompanyByLang(company.type)}}</span>
+                                </div>
+                                <ul class="list-unstyled mb-1-9">
+
+                                    <li class="mb-2 mb-xl-3 display-28" dir="ltr"><span
+                                            class="display-26 text-secondary me-2 font-weight-600">{{"company_location"|translate}}:</span>
+                                        {{company.location}}
+                                    </li>
+                                    <li class="mb-2 mb-xl-3 display-28" dir="ltr"><span
+                                            class="display-26 text-secondary me-2 font-weight-600">{{"email"|translate}}:</span>
+                                        {{company.email}}</li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 mb-4 mb-sm-5">
+                <div class="d-flex row">
+                    <span class="section-title text-primary mb-3 mb-sm-4">
+                        {{"company_jobs"|translate}}
+                        <i (click)="addNewjob()" *ngIf="!companyGuest" class="fas fa-plus icon-rounded"></i></span>
+                    <div class="col-md-4" *ngFor="let job of company.jobs">
+                        <div class="card mb-3 ">
+                            <div class="new-label" *ngIf="job.isNew">NEW</div>
+                            <img [src]="job.image" height="200" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ job.title }}</h5>
+                                <p class="card-text">{{ job.description }}</p>
+                                <div class="tags-container">
+                                    <p *ngFor="let tag of job.tags">
+                                        {{tag}}
+                                    </p>
+                                </div>
+                                <p>{{"deadline"|translate}}: {{ job.deadline }}</p>
+                                <p *ngIf="!companyGuest"
+                                    [ngClass]="{'cursor-pointer text-underlined':job.applicants.length>0}"
+                                    (click)="showApplicants(job)">
+                                    {{"applicants_No"|translate}}:
+                                    {{ job.applicants.length }}</p>
+                                <p *ngIf="companyGuest" [ngClass]="{'cursor-pointer':job.applicants.length>0}">
+                                    {{"applicants_No"|translate}}:
+                                    {{ job.applicants.length }}</p>
+
+                                <div class="d-flex justify-content-end">
+
+                                    <button *ngIf="!companyGuest" (click)="goToJobPage(job)"
+                                        class="btn btn-orange my-2">{{'preview'|translate}}</button>
+                                    <button *ngIf="companyGuest && job.isApplied" (click)="goToJobPageGuest(job)"
+                                        class="btn btn-orange my-2">{{'preview'|translate}}</button>
+                                    <button *ngIf="companyGuest && !job.isApplied" (click)="goToJobPageGuest(job)"
+                                        class="btn btn-apply my-2">{{'apply'|translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div id="modalTarget">
+    <ejs-dialog [dir]="DirectSite" id="modalDialog" #modalDialog (overlayClick)="overlayClick()" [isModal]="true"
+        [target]="target" [width]="width" [visible]="false">
+        <ng-template #header>
+            <span class="section-title" *ngIf="modalType === 1">{{
+                "update_basic_info" | translate
+                }}</span>
+            <span class="section-title" *ngIf="modalType === 2">{{
+                "add_new_job" | translate
+                }}</span>
+            <span class="section-title" *ngIf="modalType === 3">{{
+                "applicants" | translate
+                }}</span>
+
+        </ng-template>
+        <ng-template #content>
+            <div *ngIf="modalType ===1">
+                <form #ngForm="ngForm" (ngSubmit)="submitUpdateBio(ngForm)">
+                    <div class="mb-3">
+                        <img [src]="selectedImageURL ? selectedImageURL : previousImageUrl()" alt=""
+                            class="image-rounded fixed-image-size" />
+                        <button *ngIf="!selectedImageURL" type="button" class="btn btn-secondary my-2"
+                            (click)="selectImage()">
+                            {{ "select_img" | translate }}
+                        </button>
+                        <button *ngIf="selectedImageURL" type="button" class="btn btn-secondary btn-save"
+                            (click)="Update_Img()">
+                            {{ "save" | translate }}
+                        </button>
+                        <input #fileInput type="file" (change)="onImageSelected($event)" accept="image/*"
+                            class="d-none" />
+
+                        <div class="mb-3">
+                            <label for="location" class="text-primary">{{'company_location'|translate}}</label>
+                            <input class="form-control" name="location" id="location"
+                                placeholder="{{'company_location'|translate}}" [(ngModel)]="updated_info.location"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="text-primary">{{'email'|translate}}</label>
+                            <input class="form-control" name="email" id="email" placeholder="{{'email'|translate}}"
+                                [(ngModel)]="updated_info.email" required>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-secondary">{{"submit"|translate}}</button>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="modalType ===2">
+                <form #ngForm="ngForm" (ngSubmit)="submitAddJob(ngForm)">
+                    <div class="mb-3">
+                        <div class="mb-3">
+                            <label for="title" class="text-primary">{{'job_title'|translate}}</label>
+                            <input class="form-control" name="title" id="title" placeholder="{{'job_title'|translate}}"
+                                ngModel required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="text-primary">{{'job_description'|translate}}</label>
+                            <textarea type="text" class="form-control" name="description"
+                                placeholder="{{'job_description'|translate}}" id="description" ngModel
+                                required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tags" class="text-primary">{{'job_tags'|translate}}</label>
+                            <ng-select [items]="company.tags" class="form-control" [bindLabel]="getNamebyLang()" ngModel
+                                [bindValue]="getNamebyLang()" name="tags" [multiple]="true" bindValue="id"></ng-select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="deadline" class="text-primary">{{'job_deadline'|translate}}</label>
+                            <input type="date" class="form-control" name="deadline" id="deadline" ngModel required>
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-secondary">{{"submit"|translate}}</button>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="modalType ===3" class="justify-content-start d-flex">
+                <table class="offset-1 col-10">
+                    <thead>
+                        <tr>
+                            <th class="col-10 display-26 text-secondary me-2 font-weight-600">
+                                {{"applicant_name"|translate}}</th>
+                            <th class="col-2 display-26 text-secondary me-2 font-weight-600">
+                                {{"applicant_file"|translate}}
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let applicant of applicants; let i = index" class="py-2"
+                            [ngClass]="{'bg-light':i%2==0,'bg-dark text-light':i%2==1}">
+
+                            <td class="col-10 display-26  px-5 py-2"
+                                [ngClass]="{'text-secondary':i%2==0,' text-light':i%2==1}">
+                                <p class="cursor-pointer" (click)="NavigatetoApplicantProfile(applicant.userId._id)">
+                                    {{applicant.userId.username}} <span
+                                        *ngIf="applicant.userId.first_name && applicant.userId.last_name">({{
+                                        applicant.userId.first_name }}{{
+                                        applicant.userId.last_name }})</span></p>
+                            </td>
+                            <td class="d-flex col-2 p-10">
+                                <i class="fa fa-pdf cursor-pointer"
+                                    (click)="GoToApplicantFile(applicant.fileName)">&#xf1c1;</i>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </ng-template>
+    </ejs-dialog>
+</div>

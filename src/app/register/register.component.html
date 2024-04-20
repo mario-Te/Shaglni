@@ -1,0 +1,46 @@
+<div class="container " [dir]="DirectSite">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+      <div class="card box-shadow">
+        <div class="card-header">
+          {{"register"|translate}}
+        </div>
+        <div class="card-body">
+          <div class="justify-content-center d-flex"><i class="fa fa-user"></i></div>
+          <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+            <div class="mb-3">
+              <label for="username" class="form-label">{{"username"|translate}}</label>
+              <input type="text" class="form-control" id="username" name="username" ngModel required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">{{"email"|translate}}</label>
+              <input type="email" class="form-control" id="email" name="email" ngModel email required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">{{"password"|translate}}</label>
+              <input type="password" class="form-control" minlength=" 8" id="password" name="password" ngModel required>
+            </div>
+            <div class="mb-3">
+              <label for="birthdate" class="form-label">{{"birthdate"|translate}}</label>
+              <input type="date" class="form-control" id="birthdate" name="birthdate" ngModel required>
+            </div>
+            <div class="mb-3">
+              <label for="specializations" class="form-label">{{"specializations"|translate}}</label>
+              <select class="form-control" id="specializations" name="specializations" ngModel required>
+                <option *ngFor="let spec of specs" [ngValue]="spec['_id']">{{ spec.name_en }}</option>
+              </select>
+            </div>
+            <div class="d-flex justify-content-center">
+              <p class="text-danger">{{errorResponse}}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button type="button" (click)="LoginPage()" class="btn btn-orange">{{"login"|translate}}</button>
+              <button type="submit" [disabled]="!registerForm.valid"
+                class="btn btn-apply">{{'submit'|translate}}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

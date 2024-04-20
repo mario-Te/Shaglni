@@ -1,0 +1,31 @@
+<div class="container-fluid bg-light text-dark py-3 ">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <h5>Contact Us</h5>
+            <p>Email: example@example.com</p>
+            <p>Phone: 123-456-7890</p>
+        </div>
+        <div class=" col-md-4 text-center">
+            <h5>{{'links'|translate}}</h5>
+            <ul class="list-unstyled">
+                <li><a class="nav-link" (click)="navigateHome()">{{'homepage'|translate}}</a></li>
+                <li><a class="nav-link" (click)="navigateHome()">{{'available_jobs'|translate}}</a></li>
+                <li><a class="nav-link" (click)="Services()">{{'services_'|translate}}</a></li>
+                <li><a class="nav-link" (click)="navigateHome()">Contact</a></li>
+            </ul>
+        </div>
+        <div class="col-md-4 text-center">
+            <h5>{{'follow_us'|translate}}</h5>
+            <ul class="list-unstyled">
+                <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-md-12 text-center">
+            <p>&copy; {{'rights_reversed'|translate}}</p>
+        </div>
+    </div>
+</div>

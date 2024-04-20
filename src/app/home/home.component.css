@@ -1,0 +1,29 @@
+.main-content {
+  background-image: url("../../assets/images/1676332419291.png");
+  background-repeat: no-repeat; /* Ensure the background image is not repeated */
+  background-size: cover; /* Ensure the background image covers the entire container */
+  height: 600px;
+}
+.main-text {
+  position: absolute;
+  bottom: 200px;
+  color: white;
+  width: 550px;
+  left: 5px;
+}
+.card {
+  background-color: #0d244e;
+  color: white;
+  border-radius: 11px;
+  height: fit-content;
+}
+.card:hover {
+  margin-top: 20px;
+  transition: all 0.8s ease;
+  position: relative;
+  -webkit-transition: all 0.8s ease;
+}
+.card img {
+  height: 250px;
+  padding: 5px;
+}

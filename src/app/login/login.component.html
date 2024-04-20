@@ -1,0 +1,33 @@
+<div class="container" [dir]="DirectSite">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+      <div class="card  box-shadow">
+        <div class="card-header">
+          {{'login'|translate}}
+        </div>
+        <div class="card-body">
+          <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+            <div class="mb-3">
+              <label for="emailOrUsername" class="form-label" *ngIf="IsCompanyLogin">{{'email_name'|translate}}</label>
+              <label for="emailOrUsername" class="form-label"
+                *ngIf="!IsCompanyLogin">{{'email_username'|translate}}</label>
+              <input type="text" class="form-control" id="emailOrUsername" name="emailOrUsername" ngModel required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">{{'password'|translate}}</label>
+              <input type="password" class="form-control" id="password" name="password" ngModel required>
+            </div>
+            <div class="d-flex justify-content-center">
+              <p class="text-danger">{{errorResponse}}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+
+              <button type="button" (click)="RegisterPage()" class="btn btn-orange">{{"register"|translate}}</button>
+              <button type="submit" class="btn btn-apply">{{'submit'|translate}}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

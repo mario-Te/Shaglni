@@ -1,0 +1,70 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light" [dir]="DirectSite">
+    <div class="container-fluid">
+        <a class="navbar-brand" (click)="goToHome()">
+            <img src="../../assets/images/e2c3e328db594253a8436267d1282b4c.png" class="logo">
+        </a>
+        <button class="navbar-toggler border-0" (click)="goToNotifications()" *ngIf="!isGuest()">
+            <a class="nav-link">
+                <i class="fas fa-bell ">
+                    <p class="upper-badge" *ngIf="count>0">{{count}}</p>
+                </i>
+            </a>
+            <ul [ngClass]="{'dropdown-menu': 1, 'd-block notification-area' :isNotificationExpanded,'notification-area-rtl':isArabic}"
+                aria-labelledby="dropdownMenuButton1">
+
+                <li *ngFor="let notification of notifications">
+                    <a>{{ notification.message}}</a>
+                </li>
+
+            </ul>
+        </button>
+        <button class="navbar-toggler" (click)="changeCollapseStatus()">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div [ngClass]="{'navbar-collapse justify-content-end d-flex':1, 'collapse':!isCollapsed}" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" (click)="goToHome()">{{'homepage'|translate}}</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" (click)="goToJobs()">{{'available_jobs'|translate}}</a>
+                </li>
+                <li class="nav-item" *ngIf="isGuest()">
+                    <a class="nav-link" (click)="goToRegister()">{{'register'|translate}}</a>
+                </li>
+                <li class="nav-item" *ngIf="!isGuest()">
+                    <a class="nav-link" (click)="gotoProfile()">{{'profiles'|translate}}</a>
+                </li>
+
+                <li class="nav-item hide-mobile" *ngIf="!isGuest()">
+                    <a class="nav-link" (click)="goToNotifications()">
+                        <i class="fas fa-bell ">
+                            <p class="badge" *ngIf="count>0">{{count}}</p>
+                        </i>
+                    </a>
+                    <ul [ngClass]="{'dropdown-menu': 1, 'd-block notification-area' :isNotificationExpanded,'notification-area-rtl':isArabic}"
+                        aria-labelledby="dropdownMenuButton1">
+
+                        <li *ngFor="let notification of notifications">
+                            <a>{{ notification.message}}</a>
+                        </li>
+
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton1"
+                        (click)="changeDropDownStatus()">
+                        {{"language"|translate }}
+                    </button>
+                    <ul [ngClass]="{'dropdown-menu': 1, 'd-block' :isExpanded}" aria-labelledby="dropdownMenuButton1">
+                        <li><a [ngClass]="{'dropdown-item': 1, 'text-right' :isArabic,'text-left' :!isArabic}"
+                                (click)="setLang('ar')">{{"arabic"|translate}}</a></li>
+                        <li><a [ngClass]="{'dropdown-item': 1, 'text-right' :isArabic,'text-left' :!isArabic}"
+                                (click)="setLang('en')">{{"english"|translate}}</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

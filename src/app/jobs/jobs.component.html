@@ -1,0 +1,63 @@
+<ngx-ui-loader *ngIf="isLoading"></ngx-ui-loader>
+<div *ngIf="!isLoading" [dir]="DirectSite">
+  <div class="container">
+    <app-search-bar (searchEvent)="performSearch($event)"></app-search-bar>
+    <div class="row">
+      <div class="col-md-4 cursor-pointer" *ngFor="let job of jobs">
+        <div class="card mb-3 ">
+          <div class="new-label" *ngIf="job.isNew">NEW</div>
+          <img [src]="job.image" height="200" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{ job.title }}</h5>
+            <p class="card-text">{{ job.description }}</p>
+            <div class="tags-container">
+              <p (click)="performSearch(tag)" *ngFor="let tag of job.tags">
+                {{tag}}
+              </p>
+
+            </div>
+            <p class="company">{{"company_name"|translate}}:<span class="font-weight-600"
+                (click)="NavigatetoCompanyProfile(job.company._id)"> {{ job.company.name }}</span>
+            </p>
+            <p>{{"deadline"|translate}}: {{ job.deadline }}</p>
+            <p>{{"applicants_No"|translate}}: {{ job.applicants.length }}</p>
+            <div class="d-flex justify-content-end">
+              <button *ngIf="!job.isApplied && !isCompany" (click)="goToJobPage(job)"
+                class="btn btn-apply my-2">{{'apply'|translate}}</button>
+              <button *ngIf="job.isApplied || isCompany" (click)="goToJobPage(job)"
+                class="btn btn-orange my-2">{{'preview'|translate}}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav *ngIf="totalPages > 1">
+    <ul class="pagination d-flex justify-content-center">
+      <li class="page-item" [class.disabled]="current_job_page === 1">
+        <a class="page-link" (click)="goToPage(1)" aria-label="First">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li class="page-item" [class.disabled]="current_job_page === 1">
+        <a class="page-link" (click)="goToPage(current_job_page - 1)" aria-label="Previous">
+          <span aria-hidden="true">&lsaquo;</span>
+        </a>
+      </li>
+      <li class="page-item" *ngFor="let page of getPages()" [class.active]="page === current_job_page">
+        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="current_job_page === totalPages">
+        <a class="page-link" (click)="goToPage(current_job_page + 1)" aria-label="Next">
+          <span aria-hidden="true">&rsaquo;</span>
+        </a>
+      </li>
+      <li class="page-item" [class.disabled]="current_job_page === totalPages">
+        <a class="page-link" (click)="goToPage(totalPages)" aria-label="Last">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+</div>

@@ -1,0 +1,224 @@
+<ngx-ui-loader *ngIf="loading"></ngx-ui-loader>
+<app-company-profile *ngIf="!loading && company!=undefined" [companyGuest]="isCompanyGuest" [company]="company"
+    [DirectSite]="DirectSite">
+
+</app-company-profile>
+<section class="bg-light" *ngIf="!loading && user && !isCompanyGuest" [dir]="DirectSite">
+    <div class="container">
+        <div>
+            <span class="section-title text-primary mb-3 mb-sm-4">
+                <i *ngIf="!isGuest" class="fas fa-sign-out icon-rounded" (click)="LogOut()"></i></span>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 mb-4 mb-sm-5">
+                <div class="card card-style1 border-0">
+                    <div class="card-body p-1-9 p-sm-2-3 p-md-6 p-lg-7">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 mb-4 mb-lg-0">
+                                <span
+                                    [ngClass]="{'no-box-shadow':1,'edit-image':!isArabic,'edit-image-arabic no-box-shadow':isArabic,}"><i
+                                        (click)="UpdateBasic()" *ngIf="!isGuest"
+                                        class="fas fa-pencil icon-rounded"></i></span>
+                                <img [src]="previousImageUrl()" alt="...">
+                            </div>
+                            <div class="col-lg-6 px-xl-10">
+                                <div class="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded">
+                                    <h3 class="h2 text-white mb-0">{{user.first_name}} {{user.last_name}}</h3>
+                                    <span class="text-primary">{{"job_seeker"|translate}}</span>
+                                </div>
+                                <ul class="list-unstyled mb-1-9">
+
+                                    <li class="mb-2 mb-xl-3 display-28"><span
+                                            class="display-26 text-secondary me-2 font-weight-600">{{"experience"|translate}}:</span>
+                                        {{user.experience}}
+                                        {{"years"|translate}}</li>
+                                    <li class="mb-2 mb-xl-3 display-28"><span
+                                            class="display-26 text-secondary me-2 font-weight-600">{{"email"|translate}}:</span>
+                                        {{user.user.email}}</li>
+                                    <li class="mb-2 mb-xl-3 display-28"><span
+                                            class="display-26 text-secondary me-2 font-weight-600">{{"birthdate"|translate}}:</span>
+                                        {{user.birthdate}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 mb-4 mb-sm-5">
+
+                <div>
+                    <span class="section-title text-primary mb-3 mb-sm-4">
+                        {{"about_me"|translate}}
+                        <i class="fas fa-pencil icon-rounded" (click)="UpdateBio()" *ngIf="!isGuest"></i></span>
+                    <p>{{user.bio}}</p>
+
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-12 mb-4 mb-sm-5">
+                        <div class="mb-4 mb-sm-5">
+                            <span class="section-title text-primary mb-3 mb-sm-4">{{"skills"|translate}}
+                                <i class="fas fa-pencil icon-rounded" (click)="UpdateSkills()"
+                                    *ngIf="!isGuest"></i></span>
+                            <div *ngFor="let skill of userSkills">
+                                <div class="progress-text">
+                                    <div class="row">
+                                        <div class="col-6">{{skill[0]}}</div>
+                                        <div [ngClass]="{'text-end':!isArabic,'text-start':isArabic,'col-6':1}">
+                                            {{skill[1]}}%</div>
+                                    </div>
+                                </div>
+                                <div class="custom-progress progress progress-medium mb-3" style="height: 4px;">
+                                    <div class="animated custom-bar progress-bar slideInLeft bg-secondary"
+                                        [style.width]="getWidth(skill[1])" aria-valuemax="100" aria-valuemin="0"
+                                        aria-valuenow="10" role="progressbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="section-title text-primary mb-3 mb-sm-4">{{"eduction" |translate}}
+                                <i class="fas fa-pencil icon-rounded" (click)="UpdateEducation()" *ngIf="!isGuest"></i>
+                            </span>
+                            <p class="mb-1-9">{{user.education}}</p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<div id="modalTarget">
+    <ejs-dialog [dir]="DirectSite" id="modalDialog" #modalDialog (overlayClick)="overlayClick()" [isModal]="true"
+        [target]="target" [width]="width" [visible]="false">
+        <ng-template #header>
+            <span class="section-title" *ngIf="modalType === 1">{{
+                "update_bio" | translate
+                }}</span>
+            <span class="section-title" *ngIf="modalType === 2">{{
+                "update_skills" | translate
+                }}</span>
+            <span class="section-title" *ngIf="modalType === 3">{{
+                "update_education" | translate
+                }}</span>
+            <span class="section-title" *ngIf="modalType === 4">{{
+                "update_basic_info" | translate
+                }}</span>
+
+        </ng-template>
+        <ng-template #content>
+            <div *ngIf="modalType ===1">
+                <form #ngForm="ngForm" (ngSubmit)="submitUpdateBio(ngForm)">
+                    <div class="mb-3">
+                        <textarea class="form-control" name="bio" id="bio" [(ngModel)]="user.bio" required></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-secondary">{{"submit"|translate}}</button>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="modalType==2">
+                <i class="fas fa-plus " (click)=newSkill()></i>
+                <table class="offset-2">
+                    <thead>
+                        <tr>
+                            <th class="col-4 display-26 text-secondary me-2 font-weight-600">{{"skill"|translate}}</th>
+                            <th class="col-6 display-26 text-secondary me-2 font-weight-600">{{"proficiency"|translate}}
+                            </th>
+                            <th class="col-2">{{""}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let skill of userSkills; let i = index" class="py-2">
+                            <td class="col-4 display-26 text-secondary">{{ skill[0] }}</td>
+                            <td class="d-flex col-6">
+                                <input type="number" class="form-control custom-input" [id]="'skill' + i"
+                                    [value]="skill[1]" [(ngModel)]=" skill[1]" min="0" max="100" />
+                                <span class="percentage">/100</span>
+                            </td>
+                            <td class="col-2"><i (click)="removepreviousSkill(i)"
+                                    class="fas fa-trash icon-rounded no-box-shadow"></i></td>
+                        </tr>
+                        <tr *ngFor="let skill of newSkills; let i = index" class="py-2">
+                            <td class="col-4 display-26 text-secondary">
+                                <select class="form-control display-23 text-secondary" [(ngModel)]=" skill[0]">
+                                    <option *ngFor="let spec of specs" [ngValue]="getspecByLang(spec)">{{
+                                        getspecByLang(spec) }}</option>
+                                </select>
+                            </td>
+                            <td class="d-flex col-6">
+                                <input type="number" class="form-control custom-input" [(ngModel)]=" skill[1]"
+                                    [id]="'skill' + i" [value]="skill[1]" />
+                                <span class="percentage">/100</span>
+                            </td>
+                            <td class="col-2" (click)="removenewSkill(i)"><i
+                                    class="fas fa-trash icon-rounded no-box-shadow"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-end">
+                    <button type="button" (click)="submitUpdateSkills()"
+                        class="btn btn-secondary">{{"submit"|translate}}</button>
+                </div>
+            </div>
+
+            <div *ngIf="modalType ===3">
+                <form #ngForm="ngForm" (ngSubmit)="submitUpdateEducation(ngForm)">
+                    <div class="mb-3">
+                        <textarea type="text" class="form-control" name="education" id="education"
+                            [(ngModel)]="user.education" required></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-secondary">{{"submit"|translate}}</button>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="modalType ===4">
+                <form #ngForm="ngForm" (ngSubmit)="submitUpdateBasicInfo(ngForm)">
+                    <img [src]="selectedImageURL ? selectedImageURL : previousImageUrl()" alt=""
+                        class="image-rounded fixed-image-size" />
+                    <button *ngIf="!selectedImageURL" type="button" class="btn btn-secondary my-2"
+                        (click)="selectImage()">
+                        {{ "select_img" | translate }}
+                    </button>
+                    <button *ngIf="selectedImageURL" type="button" class="btn btn-secondary btn-save"
+                        (click)="Update_Img()">
+                        {{ "save" | translate }}
+                    </button>
+                    <input #fileInput type="file" (change)="onImageSelected($event)" accept="image/*" class="d-none" />
+                    <div class="mb-3">
+                        <label for="first_name" class="text-primary">{{'first_name'|translate}}</label>
+                        <input class="form-control" name="first_name" id="first_name"
+                            placeholder="{{'first_name'|translate}}" [(ngModel)]="user.first_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="last_name" class="text-primary">{{'last_name'|translate}}</label>
+                        <input class="form-control" id="last_name" name="last_name"
+                            placeholder="{{'last_name'|translate}}" [(ngModel)]="user.last_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="experience" class="text-primary">{{'experience'|translate}}</label>
+                        <input type="number" class="form-control" name="experience" id="experience"
+                            placeholder="{{'experience'|translate}}" [(ngModel)]="user.experience" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="text-primary">{{'email'|translate}}</label>
+                        <input type="email" class="form-control" name="email" id="email"
+                            placeholder="{{'email'|translate}}" [(ngModel)]="user.user.email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="text-primary">{{'birthdate'|translate}}</label>
+                        <input type="date" class="form-control" name="birthdate" id="date"
+                            placeholder="{{'birthdate'|translate}}" [(ngModel)]="user_birthdate" required>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-secondary">{{"submit"|translate}}</button>
+                    </div>
+                </form>
+            </div>
+
+        </ng-template>
+    </ejs-dialog>
+</div>

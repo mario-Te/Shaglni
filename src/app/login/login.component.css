@@ -1,0 +1,10 @@
+.box-shadow {
+  box-shadow: 20px 20px #15395a;
+}
+label.form-label {
+  font-weight: bold;
+}
+.card-header {
+  color: black;
+  font-weight: bold;
+}

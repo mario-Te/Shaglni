@@ -1,0 +1,102 @@
+<ngx-ui-loader *ngIf="!job"></ngx-ui-loader>
+<div class="container mt-5" *ngIf="job" [dir]="DirectSite">
+    <div class="row">
+        <!-- Left side: Big image -->
+        <div class="col-lg-6">
+            <img [src]="job.image" class="img-fluid" alt="Big Image">
+        </div>
+
+        <!-- Right side: Job details -->
+        <div class="col-lg-6">
+            <!-- Top section: Title and description -->
+            <div class="mb-4">
+                <h3>{{job.title}}</h3>
+                <p>{{job.description}}</p>
+                <p>{{job.deadline}}</p>
+            </div>
+
+            <!-- Bottom section: Company details -->
+            <div>
+                <h5>{{"company_details"|translate}}</h5>
+                <ul>
+                    <li><i class="fas fa-building "></i>
+                        <strong class="px-2">{{"company_name"|translate}}:</strong>{{job.company.name}}
+                    </li>
+                    <li><i class="fa fa-map-marker "></i><strong class="px-2">{{"company_location"|translate}}:</strong>
+                        {{job.company.location}}</li>
+
+                </ul>
+            </div>
+            <div class="d-flex justify-content-center" *ngIf="isJobOwner">
+                <button (click)="editInfo()" class="btn-orange">{{"edit"|translate}}</button>
+            </div>
+            <div class="d-flex justify-content-center" *ngIf="!job.isApplied && !isJobOwner && !isCompany">
+                <input type="file" (change)="onFileSelected($event)" accept=".pdf" #fileInput hidden />
+                <button (click)="fileInput.click()" class="btn-orange">{{"apply_job"|translate}}</button>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<div id="modalTarget">
+    <ejs-dialog [dir]="DirectSite" id="modalDialog" #modalDialog (overlayClick)="overlayClick()" [isModal]="true"
+        [target]="target" [width]="width" [visible]="false">
+        <ng-template #header>
+            <span class="section-title" *ngIf="modalType === 1">{{
+                "update_basic_info" | translate
+                }}</span>
+
+
+        </ng-template>
+        <ng-template #content>
+
+            <div *ngIf="modalType ===1">
+                <form #ngForm="ngForm" (ngSubmit)="submitUpdateJob(ngForm)">
+                    <div class="mb-3">
+                        <div class="mb-3">
+                            <img [src]="selectedImageURL ? selectedImageURL : previousImageUrl()" alt="" width="150"
+                                class="image-rounded fixed-image-size" />
+                            <button *ngIf="!selectedImageURL" type="button" class="btn btn-secondary my-2"
+                                (click)="selectImage()">
+                                {{ "select_img" | translate }}
+                            </button>
+                            <button *ngIf="selectedImageURL" type="button" class="btn btn-secondary btn-save"
+                                (click)="Update_Img()">
+                                {{ "save" | translate }}
+                            </button>
+                            <input #fileInput type="file" (change)="onImageSelected($event)" accept="image/*"
+                                class="d-none" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="title" class="text-primary">{{'job_title'|translate}}</label>
+                            <input class="form-control" name="title" id="title" placeholder="{{'job_title'|translate}}"
+                                [(ngModel)]="job.title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="text-primary">{{'job_description'|translate}}</label>
+                            <textarea type="text" class="form-control" name="description"
+                                placeholder="{{'job_description'|translate}}" id="description"
+                                [(ngModel)]="job.description" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tags" class="text-primary">{{'job_tags'|translate}}</label>
+                            <ng-select [items]="tags" [(ngModel)]="job.tags" class="form-control"
+                                [bindLabel]="getNamebyLang()" [bindValue]="getNamebyLang()" name="tags"
+                                [multiple]="true" bindValue="id"></ng-select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="deadline" class="text-primary">{{'job_deadline'|translate}}</label>
+                            <input type="date" class="form-control" name="deadline" id="deadline"
+                                [(ngModel)]="job_deadline" required>
+                        </div>
+
+                    </div>
+                    <div class=" d-flex justify-content-end">
+                        <button type="submit" class="btn btn-secondary">{{"submit"|translate}}</button>
+                    </div>
+                </form>
+            </div>
+        </ng-template>
+    </ejs-dialog>
+</div>
