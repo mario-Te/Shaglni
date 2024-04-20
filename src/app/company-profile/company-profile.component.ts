@@ -31,7 +31,6 @@ export class CompanyProfileComponent implements OnInit {
   constructor(private router: Router, private profileservice: ProfileService,
     private translate: TranslateService, private route: ActivatedRoute,
     private renderer2: Renderer2, private dataservice: DataService) {
-
   }
   ngOnInit(): void {
     if (this.DirectSite == 'rtl')
